@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whether App</title>
+</head>
+<body>
+    <h1>WEATHER APP⛅</h1>
+   <h2> Search Weather🔎</h2>
+
+   <input id="city" placeholder="Enter city"> 
+   <button id="btn">Search</button>
+   <div id="out"></div>
+
+   <script>
+    const input=document.getElementById('city');
+    const out =document.getElementById('out');
+    document.getElementById('btn').addEventListener('click',async()=>{
+        const city=input.value.trim();
+        if(!city){
+            out.textContent='type a city name.';
+            return;
+        }
+        out.textContent='loading...';
+        try{
+            const res=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=YOUR_API_KEY&units=metric
+`);
+            if(!res.ok) throw new Error('Network error');
+            const data = await res.json();
+            const now=data.current_condition[0];
+
+            out.innerHTML=`
+            <h3>${data.nearest_area?.[0]?.areaName?.value||city}</h3>
+            <p> 🌡️temp:${now.temp_C}℃</p>
+            <p>⛅weather:${now.weatherDesc[0].value}</p>
+            </p>🌪️wind:${now.windspeedKmph}km/h </p>
+            `;
+            
+        }catch(err){
+             out.textContent='could not load weather.';
+             console.error(err)
+        }
+    });
+   </script>
+</body>
+</html>
